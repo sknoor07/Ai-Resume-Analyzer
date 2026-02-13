@@ -10,28 +10,28 @@ function AiTools() {
             description: "Get personalized career guidance",
             icon: "/chatbot.png",
             button:"Get Started",
-            path: "/ai-tools/ai-chats"
+            path: "/dashboard/ai-tools/ai-chat"
         },
         {
             name: "AI Resume Analyzer",
             description: "Improve your resume with AI",
             icon: "/resume.png",
             button:"Get Started",
-            path: "/ai-resume-analyzer"
+            path: "/dashboard/ai-tools/ai-resume-analyzer"
         },
         {
             name: "Career Road Map Generator",
             description: "Build your career roadmap with AI",
             icon: "/roadmap.png",
             button:"Get Started",
-            path: "/career-roadmap-generator"
+            path: "/dashboard/ai-tools/career-roadmap-generator"
         },
         {
             name: "Cover Letter Generator",
             description: "Generate a cover letter with AI",
             icon: "/cover.png",
             button:"Get Started",
-            path: "/cover-letter-generator"
+            path: "/dashboard/ai-tools/cover-letter-generator"
         },
     ]
     return (

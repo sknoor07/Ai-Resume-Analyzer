@@ -33,7 +33,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body
+  className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen flex flex-col`}
+>
+
           <header className="flex justify-between items-center px-6 h-16 border-b bg-white dark:bg-black">
             {/* Left - Logo */}
             <div className="flex items-center gap-2 font-semibold text-lg">
@@ -60,7 +63,9 @@ export default function RootLayout({
             </div>
           </header>
 
-          {children}
+          <div className="flex-1 overflow-hidden">
+    {children}
+  </div>
         </body>
       </html>
     </ClerkProvider>
