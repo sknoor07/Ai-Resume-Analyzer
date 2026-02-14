@@ -28,27 +28,35 @@ export default function AiChatPage() {
     }
 
     async function handleSend(){
-    setIsLoading(true);
-    
-    setMessageList(prev=>[...prev,{
-        content:userInput,
-        role:"user", 
-        type:"text",
-    }]);
-    setUserInput("");
-    const result = await axios.post("/api/ai-career-chat",{
-        userinput:userInput
-    })
-    console.log(result.data)
-    setMessageList(prev=>[...prev,result.data])
-    setIsLoading(false);
-}
-    console.log(messageList);
+        setIsLoading(true);
+        setMessageList(prev=>[...prev,{
+            content:userInput,
+            role:"user", 
+            type:"text",
+        }]);
+        setUserInput("");
+        const result = await axios.post("/api/ai-career-chat",{
+            userinput:userInput
+        })
+        console.log(result.data)
+        setMessageList(prev=>[...prev,result.data])
+        setIsLoading(false);
+        }
+        console.log(messageList);
 
     useEffect(()=>{
         // Save messages to database
+        if(messageList.length>0){
+            updatMessageListinDatabase();
+        }
     },[messageList])
 
+    const updatMessageListinDatabase=async()=>{
+        const result = await axios.put("/api/history",{
+            record_id:chatid,
+            content:messageList
+        })
+    }
     return (
         <div className="flex flex-col flex-1 h-[75vh] overflow-y-auto">
 

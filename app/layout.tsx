@@ -9,6 +9,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import Provider from "./Provider.tsx";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,10 +63,11 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </header>
-
           <div className="flex-1 overflow-hidden">
-    {children}
-  </div>
+            <Provider>
+              {children}
+            </Provider>
+          </div>
         </body>
       </html>
     </ClerkProvider>

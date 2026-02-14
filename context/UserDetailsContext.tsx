@@ -1,4 +1,4 @@
-import { userDetails } from "@/app/provider";
+import { userDetails } from "@/app/Provider";
 import React, { createContext, use, useContext } from "react";
 
 export type AuthContextType = {
