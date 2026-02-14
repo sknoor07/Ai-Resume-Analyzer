@@ -1,5 +1,6 @@
 "use client";
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
 import { ArrowRight, Link, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,9 +23,19 @@ function AiToolCard({tool}: Props) {
     const router = useRouter();
     const id = uuidv4();
 
+    async function createnewRecord(){
+           const result = await axios.post("/api/history",{
+            record_id:id,
+            content:[],
+           });
+           console.log(result.data);
+    }
+
     function startCall(){
+        createnewRecord();
         setLoading(true);
         router.push(tool.path+"/"+id);
+        
     }
     return (
         <div className='p-3 border rounded-2xl'>
