@@ -1,16 +1,58 @@
 "use client";
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Send } from 'lucide-react'
-import React from 'react'
+import { Loader, Loader2, LoaderCircle, Send } from 'lucide-react'
+import React, { useEffect } from 'react'
 import EmptyState from './_components/EmptyState';
 import { StringChunk } from 'drizzle-orm';
+import axios from 'axios';
+import Markdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
+
+type messages={
+    content: string,
+    role:string,
+    type:string
+
+}
 
 export default function AiChatPage() {
     const [userInput, setUserInput] = React.useState<string>();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [messageList,setMessageList]=React.useState<messages[]>([{
+        content:"Hello, I am looking for a job as a software engineer",
+        role:"user",
+        type:"text",
+    },{
+        content:"Ohh! thats a good question, let go through your resume first",
+        role:"assistant",
+        type:"text",
+    }]);
     function handleSelectedQuestion(question: string) {
    setUserInput(question);
 }
+async function handleSend(){
+    setIsLoading(true);
+    
+    setMessageList(prev=>[...prev,{
+        content:userInput,
+        role:"user", 
+        type:"text",
+    }]);
+    setUserInput("");
+    const result = await axios.post("/api/ai-career-chat",{
+        userinput:userInput
+    })
+
+    setMessageList(prev=>[...prev,result.data])
+    setIsLoading(false);
+}
+    console.log(messageList);
+
+    useEffect(()=>{
+        // Save messages to database
+    },[messageList])
+
     return (
         <div className="flex flex-col flex-1">
 
@@ -29,13 +71,30 @@ export default function AiChatPage() {
 
             {/* Chat Container */}
              <div className="flex flex-col flex-1 border rounded-lg p-4">
-                <div>
+                {messageList.length===0&&<div>
                     <EmptyState selectedQuestion={handleSelectedQuestion} />
-                </div>
+                </div>}
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto">
+                    {messageList.map((message, index) => (
+                        <div>
+                        <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`p-3 rounded-lg ${message.role === "user"? "bg-blue-200 text-black my-5": "bg-gray-300 text-black"}`}>
+                                <ReactMarkdown>
+                                {message.role + ": " + message.content}
+                                </ReactMarkdown>
+                            </div>
+                            </div>
+                            {isLoading && messageList?.length - 1 === index && (
+                                <div className="flex justify-start p-3 rounded-lg gap-2 bg-gray-300 text-black mb-2">
+                                    <LoaderCircle className="animate-spin" /> Thinking...
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
+
 
                 {/* Input */}
                 <div className="flex items-center gap-4 pt-4">
@@ -45,7 +104,7 @@ export default function AiChatPage() {
                         value={userInput || ""}
    onChange={(e) => setUserInput(e.target.value)}
                     />
-                    <Button size="icon">
+                    <Button size="icon" onClick={async ()=>handleSend()} disabled={isLoading}>
                         <Send />
                     </Button>
                 </div>
