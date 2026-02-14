@@ -1,5 +1,5 @@
 import { inngest } from "./client";
-import { createAgent, gemini, openai } from '@inngest/agent-kit';
+import { createAgent, gemini } from '@inngest/agent-kit';
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -17,10 +17,11 @@ const AiCareerChatAgent = createAgent({
     'You are a career expert. ' +
     'You only provide answers to questions related to career.'+
     'Do not answer any other questions.'+
-    'keep your answers short and concise.',
+    'keep your answers short and concise.'+
+    'give your response in way so that ReactMarkdown can render it properly.',
   model: gemini({
     apiKey: process.env.GEMINI_API_KEY,
-  model: "gemini-1.5-pro"
+  model: "gemini-2.5-flash-lite"
   }),
 });
 

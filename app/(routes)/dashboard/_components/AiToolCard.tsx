@@ -4,6 +4,7 @@ import { ArrowRight, Link, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
 type Tool={
     name: string;
@@ -19,10 +20,11 @@ type Props={
 function AiToolCard({tool}: Props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const id = uuidv4();
 
     function startCall(){
         setLoading(true);
-        router.push(tool.path);
+        router.push(tool.path+"/"+id);
     }
     return (
         <div className='p-3 border rounded-2xl'>

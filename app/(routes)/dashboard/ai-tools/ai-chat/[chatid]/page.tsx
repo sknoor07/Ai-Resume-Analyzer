@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader, Loader2, LoaderCircle, Send } from 'lucide-react'
 import React, { useEffect } from 'react'
-import EmptyState from './_components/EmptyState';
+import EmptyState from '../_components/EmptyState';
 import { StringChunk } from 'drizzle-orm';
 import axios from 'axios';
 import Markdown from 'react-markdown'
 import ReactMarkdown from 'react-markdown';
+import { useParams } from 'next/navigation';
 
 type messages={
     content: string,
@@ -19,19 +20,14 @@ type messages={
 export default function AiChatPage() {
     const [userInput, setUserInput] = React.useState<string>();
     const [isLoading, setIsLoading] = React.useState(false);
-    const [messageList,setMessageList]=React.useState<messages[]>([{
-        content:"Hello, I am looking for a job as a software engineer",
-        role:"user",
-        type:"text",
-    },{
-        content:"Ohh! thats a good question, let go through your resume first",
-        role:"assistant",
-        type:"text",
-    }]);
+    const [messageList,setMessageList]=React.useState<messages[]>([]);
+    const {chatid}=useParams();
+
     function handleSelectedQuestion(question: string) {
-   setUserInput(question);
-}
-async function handleSend(){
+        setUserInput(question);
+    }
+
+    async function handleSend(){
     setIsLoading(true);
     
     setMessageList(prev=>[...prev,{
@@ -43,7 +39,7 @@ async function handleSend(){
     const result = await axios.post("/api/ai-career-chat",{
         userinput:userInput
     })
-
+    console.log(result.data)
     setMessageList(prev=>[...prev,result.data])
     setIsLoading(false);
 }
@@ -54,7 +50,7 @@ async function handleSend(){
     },[messageList])
 
     return (
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 h-[75vh] overflow-y-auto">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
@@ -70,7 +66,7 @@ async function handleSend(){
             </div>
 
             {/* Chat Container */}
-             <div className="flex flex-col flex-1 border rounded-lg p-4">
+             <div className="flex flex-col flex-1 border rounded-lg p-4 [75vh] overflow-auto">
                 {messageList.length===0&&<div>
                     <EmptyState selectedQuestion={handleSelectedQuestion} />
                 </div>}
