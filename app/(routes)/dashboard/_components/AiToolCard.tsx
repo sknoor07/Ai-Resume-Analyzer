@@ -28,7 +28,7 @@ function AiToolCard({tool}: Props) {
             record_id:id,
             content:[],
            });
-           console.log(result.data);
+           //console.log(result.data);
     }
 
     function startCall(){

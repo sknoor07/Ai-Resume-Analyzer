@@ -9,6 +9,8 @@ import axios from 'axios';
 import Markdown from 'react-markdown'
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 type messages={
     content: string,
@@ -22,6 +24,8 @@ export default function AiChatPage() {
     const [isLoading, setIsLoading] = React.useState(false);
     const [messageList,setMessageList]=React.useState<messages[]>([]);
     const {chatid}=useParams();
+    const router = useRouter();
+    
 
     function handleSelectedQuestion(question: string) {
         setUserInput(question);
@@ -50,12 +54,33 @@ export default function AiChatPage() {
             updatMessageListinDatabase();
         }
     },[messageList])
+    
+    useEffect(()=>{
+        if(chatid){
+            getMessageListFromDatabase();
+        }
+    },[chatid])
+
+    const getMessageListFromDatabase=async()=>{
+        const result = await axios.get("/api/history?record_id="+chatid)
+        console.log("result",result.data);
+        setMessageList(result.data.content);
+    }
 
     const updatMessageListinDatabase=async()=>{
         const result = await axios.put("/api/history",{
             record_id:chatid,
             content:messageList
         })
+    }
+
+    async function handleNewChat(){
+        const id = uuidv4();
+        await axios.post("/api/history",{
+            record_id:id,
+            content:[],
+           });
+        router.replace("/dashboard/ai-tools/ai-chat/"+id);
     }
     return (
         <div className="flex flex-col flex-1 h-[75vh] overflow-y-auto">
@@ -70,7 +95,7 @@ export default function AiChatPage() {
                         Chat with AI to get personalized career guidance
                     </p>
                 </div>
-                <Button>+ New Chat</Button>
+                <Button onClick={()=>handleNewChat()} className='cursor-pointer'>+ New Chat</Button>
             </div>
 
             {/* Chat Container */}
