@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
+import ResumeUploadDialog from './ResumeUploadDialog';
 
 type Tool={
     name: string;
@@ -22,6 +23,7 @@ function AiToolCard({tool}: Props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const id = uuidv4();
+    const[openDialog, setDialog]= useState(false);
 
     async function createnewRecord(){
            const result = await axios.post("/api/history",{
@@ -32,6 +34,10 @@ function AiToolCard({tool}: Props) {
     }
 
     function startCall(){
+        if(tool.name=="AI Resume Analyzer"){
+            setDialog(true);
+            return;
+        }
         createnewRecord();
         setLoading(true);
         router.push(tool.path+"/"+id);
@@ -44,12 +50,13 @@ function AiToolCard({tool}: Props) {
             <p className='mt-2 text-gray-400'>{tool.description}</p>
             
             
-            {<Button className='w-full mt-4 cursor-pointer' onClick={()=>startCall()} disabled={loading}>{tool.button}{!loading ? (
+            { <Button className='w-full mt-4 cursor-pointer' onClick={()=>startCall()} disabled={loading}>{tool.button}{!loading ? (
                   <ArrowRight />
                 ) : (
                   <Loader2 
                    className="animate-spin" />
                 )}</Button>}
+                <ResumeUploadDialog open={openDialog} setOpen={setDialog}/>
         </div>
     )
 }
